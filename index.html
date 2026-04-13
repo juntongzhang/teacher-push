@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>导师压榨指数检测 Pro | 学术生存环境深度评估</title>
+    <style>
+        :root {
+            /* 暗黑预警 Pro 风格 */
+            --primary: #2c3e50; 
+            --primary-dark: #1a252f;
+            --accent: #c0392b; /* 警示红 */
+            --accent-hover: #e74c3c;
+            --safe: #27ae60;
+            --warning: #f39c12;
+            --bg-gradient-start: #f3f5f7;
+            --bg-gradient-end: #dfe6e9;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            background: #fff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            box-shadow: 0 0 60px rgba(0,0,0,0.15);
+        }
+
+        /* 动画类 */
+        .fade-in { animation: fadeIn 0.4s ease-in forwards; }
+        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(192, 57, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); } }
+
+        /* 按钮组件 */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+            transition: transform 0.1s, background 0.2s;
+            letter-spacing: 1px;
+        }
+        .btn:active { transform: scale(0.98); background: var(--primary-dark); }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* 封面 */
+        #page-intro {
+            padding: 50px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: radial-gradient(#bdc3c7 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        .cover-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            align-self: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .cover-title {
+            font-size: 40px;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: #2c3e50;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .cover-title span { color: var(--accent); }
+        .cover-subtitle { font-size: 16px; color: #7f8c8d; margin-bottom: 40px; line-height: 1.6; }
+        
+        .intro-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .feature-box {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ecf0f1;
+            text-align: left;
+        }
+        .feature-icon { font-size: 24px; margin-bottom: 8px; }
+        .feature-title { font-weight: 800; color: #2c3e50; font-size: 14px; margin-bottom: 4px; }
+        .feature-desc { font-size: 12px; color: #95a5a6; line-height: 1.4; }
+
+        /* 档案页 */
+        #page-demographics { padding: 40px 24px; display: none; background: #fff; min-height: 100vh; }
+        .form-group { margin-bottom: 30px; }
+        .form-label { font-size: 18px; font-weight: 800; margin-bottom: 12px; display: block; color: #2c3e50; }
+        .select-box {
+            width: 100%; padding: 18px; border: 2px solid #ecf0f1; border-radius: 10px;
+            font-size: 16px; background: #fdfdfd; outline: none; appearance: none;
+            color: #2c3e50; font-weight: 500;
+        }
+        .select-box:focus { border-color: var(--primary); background: #fff; }
+        
+        /* 测试页 */
+        #page-test {
+            padding: 30px 24px;
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #fff;
+        }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 13px; color: #95a5a6; font-weight: 700; text-transform: uppercase; }
+        .progress-bar-bg { width: 100%; height: 6px; background: #f0f2f5; border-radius: 3px; margin-bottom: 30px; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; border-radius: 3px; transition: width 0.3s ease; }
+        
+        .question-card { flex: 1; }
+        .question-tag { 
+            display: inline-block; background: #ecf0f1; color: #7f8c8d; padding: 4px 10px; 
+            border-radius: 4px; font-size: 12px; margin-bottom: 15px; font-weight: 700;
+        }
+        .question-text { font-size: 22px; font-weight: 800; line-height: 1.4; margin-bottom: 30px; color: #2c3e50; }
+        
+        .option-btn {
+            background: #fdfdfd; padding: 22px 20px; border-radius: 12px; margin-bottom: 16px;
+            font-size: 16px; color: #34495e; cursor: pointer; border: 2px solid #ecf0f1; transition: all 0.2s;
+            position: relative; font-weight: 500; display: flex; align-items: center;
+        }
+        .option-btn:active { transform: scale(0.99); background: #f8f9fa; }
+        .option-btn.selected { background: #eef2f5; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+        
+        /* 结果页 */
+        #page-result {
+            display: none; background: #ecf0f1; padding-bottom: 100px; 
+            overflow-y: auto; min-height: 100vh; width: 100%;
+        }
+        .result-header {
+            background: #fff; padding: 40px 24px 30px;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            text-align: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .score-circle {
+            width: 140px; height: 140px; border-radius: 50%; border: 8px solid #ecf0f1;
+            margin: 0 auto 20px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative;
+        }
+        .score-num { font-size: 56px; font-weight: 900; color: var(--accent); line-height: 1; font-family: 'DIN Alternate', sans-serif;}
+        .score-label { font-size: 12px; color: #95a5a6; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .level-badge {
+            background: #2c3e50; color: #fff; padding: 8px 20px; border-radius: 20px;
+            font-size: 18px; font-weight: 800; display: inline-block; margin-bottom: 10px;
+        }
+        .level-desc { font-size: 14px; color: #7f8c8d; max-width: 90%; margin: 0 auto; }
+
+        .card { background: #fff; margin: 0 20px 20px; border-radius: 16px; padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .card-title { font-size: 18px; font-weight: 800; color: #2c3e50; margin-bottom: 20px; padding-left: 12px; border-left: 4px solid var(--accent); }
+
+        /* 维度条 */
+        .dim-row { display: flex; align-items: center; margin-bottom: 16px; }
+        .dim-info { width: 70px; }
+        .dim-name { font-size: 14px; font-weight: 700; color: #2c3e50; display: block; }
+        .dim-sub { font-size: 10px; color: #95a5a6; }
+        .dim-bar-bg { flex: 1; height: 8px; background: #f0f2f5; border-radius: 4px; overflow: hidden; margin: 0 12px; }
+        .dim-bar-fill { height: 100%; border-radius: 4px; }
+        .dim-val { width: 35px; text-align: right; font-size: 13px; font-weight: 700; color: #7f8c8d; }
+
+        /* 底部操作 */
+        .bottom-dock {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px); padding: 16px 24px; border-top: 1px solid #eee;
+            max-width: 520px; margin: 0 auto; z-index: 100; display: flex; flex-direction: column; gap: 10px;
+        }
+        .unlock-btn {
+            background: var(--accent); color: white; width: 100%; padding: 14px;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 700;
+            animation: pulse-red 2s infinite; cursor: pointer;
+        }
+        .reset-btn {
+            background: #fff; color: #7f8c8d; width: 100%; padding: 10px;
+            border: 1px solid #bdc3c7; border-radius: 8px; font-size: 14px; font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 报告模态窗 */
+        #report-modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: #fff; z-index: 2000; overflow-y: auto;
+        }
+        .report-header {
+            background: #2c3e50; color: #fff; padding: 70px 24px 40px;
+        }
+        .report-close {
+            position: fixed; top: 20px; right: 20px; width: 40px; height: 40px;
+            background: rgba(0,0,0,0.2); color: #fff; border-radius: 50%;
+            border: none; font-size: 24px; cursor: pointer; z-index: 2001;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .report-body { max-width: 600px; margin: 0 auto; padding: 40px 24px 100px; }
+        .report-section { margin-bottom: 50px; }
+        .r-h1 { font-size: 28px; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
+        .r-h2 { font-size: 22px; font-weight: 800; color: #2c3e50; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1; }
+        .r-h3 { font-size: 18px; font-weight: 700; color: #34495e; margin: 20px 0 10px; display: flex; align-items: center; }
+        .r-p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 15px; text-align: justify; }
+        .r-box { background: #f8f9fa; border: 1px solid #ecf0f1; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        .r-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #fff; margin-right: 8px; vertical-align: middle; }
+        .r-list li { margin-bottom: 10px; color: #555; }
+        
+        /* 辅助 */
+        canvas { width: 100%; height: auto; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 1. 封面 -->
+    <div id="page-intro" class="fade-in">
+        <div class="cover-tag">2026 Ultimate Edition</div>
+        <h1 class="cover-title">导师<span>压榨指数</span><br>深度检测 Pro</h1>
+        <p class="cover-subtitle">基于劳动法与PUA心理学的 30+ 题深度扫描<br>精准量化你的学术生存环境</p>
+        
+        <div class="intro-features">
+            <div class="feature-box">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">五维雷达图</div>
+                <div class="feature-desc">工时、财务、杂活、精神、前途，全方位无死角扫描。</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">反压榨指南</div>
+                <div class="feature-desc">根据你的受害等级，生成定制化的生存与逃生策略。</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">🎓</div>
+                <div class="feature-title">硕博分流</div>
+                <div class="feature-desc">针对硕士（就业导向）与博士（学术导向）的不同算法。</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">💊</div>
+                <div class="feature-title">万字报告</div>
+                <div class="feature-desc">深度解析每一项压榨行为背后的心理机制。</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="goToDemo()">开始深度检测 (约需 5 分钟)</button>
+    </div>
+
+    <!-- 2. 档案建立 -->
+    <div id="page-demographics">
+        <h2 style="font-size: 26px; font-weight:800; color:#2c3e50; margin-bottom:10px;">建立受害者档案 📂</h2>
+        <p style="color:#7f8c8d; font-size:14px; margin-bottom:30px;">系统将根据您的身份调整评分权重。博士的忍耐阈值将被默认调高。</p>
+
+        <div class="form-group">
+            <label class="form-label">你的身份是？</label>
+            <select id="input-status" class="select-box">
+                <option value="master">硕士 (目标：混个毕业证找工作)</option>
+                <option value="phd">博士 (目标：发文章/教职/活下去)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">导师的头衔/特征？</label>
+            <select id="input-title" class="select-box">
+                <option value="young">青椒/AP (急需成果，Push但可能给指导)</option>
+                <option value="tenure">大牛/博导 (资源多，放养，可能PUA)</option>
+                <option value="admin">行政领导 (院长/处长，神龙见首不见尾)</option>
+                <option value="retirement">佛系老教授 (快退休了，无欲无求)</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="initTest()">生成生存测试题</button>
+    </div>
+
+    <!-- 3. 测试页 -->
+    <div id="page-test">
+        <div class="progress-header">
+            <span id="dim-tag">维度：工时压迫</span>
+            <span id="progress-text">1 / 30</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-fill" id="progress-fill"></div></div>
+
+        <div id="question-wrapper" class="slide-up question-card">
+            <div class="question-tag" id="q-category">🕒 时间主权</div>
+            <div class="question-text" id="question-text">题目加载中...</div>
+            <div id="options-box"></div>
+        </div>
+        
+        <button class="btn-outline" id="prev-btn" onclick="prevQuestion()" style="display:none;">&lt; 返回上一题</button>
+    </div>
+
+    <!-- 4. Loading -->
+    <div id="page-loading" class="hidden" style="height:100vh; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:#fff;">
+        <div style="font-size:50px; animation: pulse-red 1s infinite; border-radius:50%;">🧬</div>
+        <h3 style="margin-top:20px; font-weight:800; color:#2c3e50;">正在演算剥削系数...</h3>
+        <p style="color:#7f8c8d; font-size:14px; line-height:1.8;">正在对比《劳动法》违规项...<br>分析 PUA 话术成分...<br>计算沉没成本...</p>
+    </div>
+
+    <!-- 5. 结果页 -->
+    <div id="page-result">
+        <div class="result-header">
+            <div class="score-circle">
+                <span class="score-num" id="res-score">0</span>
+                <span class="score-label">压榨指数</span>
+            </div>
+            <div class="level-badge" id="res-level">Level ?</div>
+            <div class="level-desc" id="res-desc">...</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📊 五维受难雷达</div>
+            <div style="height:240px; display:flex; justify-content:center; margin-bottom:20px;">
+                <canvas id="radarChart" width="240" height="240"></canvas>
+            </div>
+            <div id="bars-container">
+                <!-- JS 注入 -->
+            </div>
+        </div>
+
+        <div class="bottom-dock">
+            <button class="unlock-btn" onclick="showReport()">📄 解锁《反压榨求生指南》完整报告</button>
+            <button class="reset-btn" onclick="resetTest()">🔄 换个身份/导师 再测一次</button>
+        </div>
+    </div>
+
+    <!-- 完整报告模态窗 -->
+    <div id="report-modal">
+        <button class="report-close" onclick="closeReport()">×</button>
+        <div class="report-header">
+            <div style="font-size:12px; opacity:0.8; letter-spacing:1px;">ACADEMIC SURVIVAL GUIDE</div>
+            <div class="r-h1">反压榨求生指南</div>
+            <div style="font-size:14px;">定制化生存策略报告 · 2026版</div>
+        </div>
+        <div class="report-body" id="report-content">
+            <!-- JS 注入 -->
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* ----------------------------------------------------------------
+   数据配置 (29基础 + 5特供 = 34题 深度版)
+   Dimensions: time(工时), mental(精神), labor(杂活), finance(财务), career(前途)
+---------------------------------------------------------------- */
+
+const questions = [
+    // --- 维度：工时压迫 (Time) ---
+    { d: 'time', t: '工时制度', q: "关于实验室的“工作时长”要求，真实情况是？", o: [
+        {t:"朝九晚五，双休", s:0},
+        {t:"单休，导师偶尔查岗", s:4},
+        {t:"单休，指纹/人脸打卡，强制996", s:7},
+        {t:"007是常态，睡觉都要开铃声，随叫随到", s:10}
+    ]},
+    { d: 'time', t: '假期剥夺', q: "寒暑假的放假安排是怎样的？", o: [
+        {t:"按学校校历放，甚至更多", s:0},
+        {t:"比校历少一半，约2-3周", s:3},
+        {t:"象征性放个春节7天", s:7},
+        {t:"全年无休，大年三十也要改论文/做实验", s:10}
+    ]},
+    { d: 'time', t: '下班联络', q: "导师在非工作时间（深夜/周末）联系你的频率？", o: [
+        {t:"从不，除非极紧急情况", s:0},
+        {t:"偶尔会发消息，但不要求立刻回", s:2},
+        {t:"经常发，并要求立刻回复/处理", s:6},
+        {t:"半夜12点开组会，或者打夺命连环Call", s:10}
+    ]},
+    { d: 'time', t: '请假难度', q: "如果你生病或家里有急事想请假？", o: [
+        {t:"立刻批准，还会关心慰问", s:0},
+        {t:"批准，但暗示要补回进度", s:3},
+        {t:"盘问很久，还要看病历/车票，甚至扣补助", s:7},
+        {t:"不批，“只要没死就得来实验室”", s:10}
+    ]},
+    { d: 'time', t: '无效会议', q: "组会的频率和时长？", o: [
+        {t:"每周一次，高效讨论学术", s:0},
+        {t:"每周一次，但导师经常跑题讲废话", s:3},
+        {t:"极其频繁，且大部分时间在听导师吹牛/骂人", s:6},
+        {t:"不定期突袭开会，一开就是4小时以上", s:9}
+    ]},
+    { d: 'time', t: '自由支配', q: "你在实验室看与课题无关的书/学习技能，导师看到会？", o: [
+        {t:"鼓励多学点东西", s:0},
+        {t:"不管，只要活干完就行", s:2},
+        {t:"不高兴，觉得你“不务正业”", s:6},
+        {t:"严厉禁止，甚至没收闲书/断网", s:9}
+    ]},
+
+    // --- 维度：杂活浓度 (Labor) ---
+    { d: 'labor', t: '私事差遣', q: "导师是否让你处理私人事务（取快递、接孩子、甚至家务）？", o: [
+        {t:"完全没有，界限分明", s:0},
+        {t:"偶尔有，主要是顺手", s:2},
+        {t:"经常有，我是半个生活秘书", s:6},
+        {t:"我是全职保姆/司机/装修工，随叫随到", s:10}
+    ]},
+    { d: 'labor', t: '报销地狱', q: "实验室的报销工作（贴票、跑财务）是谁负责？", o: [
+        {t:"有专门的财务助理/秘书", s:0},
+        {t:"学生轮流做，还能接受", s:3},
+        {t:"全部丢给学生，且不仅是自己项目的票", s:7},
+        {t:"我是专职财务，甚至要帮导师做假账/套现", s:10}
+    ]},
+    { d: 'labor', t: '代写材料', q: "你需要帮导师写非学术材料吗（PPT、申请书、年终总结）？", o: [
+        {t:"不需要", s:0},
+        {t:"偶尔帮忙整理数据", s:2},
+        {t:"经常写，导师的PPT都是我做的", s:6},
+        {t:"导师的所有本子、甚至他孩子的作业都是我写的", s:10}
+    ]},
+    { d: 'labor', t: '实验室维护', q: "实验室的卫生、订购试剂、修仪器等工作？", o: [
+        {t:"有专门的实验员/阿姨", s:0},
+        {t:"大家轮值，公平分配", s:2},
+        {t:"全部指派给我一个人干", s:7},
+        {t:"不仅要干，还要去帮导师的新房除甲醛", s:10}
+    ]},
+    { d: 'labor', t: '横向项目', q: "关于企业横向项目（赚钱项目，对毕业无帮助）？", o: [
+        {t:"组里没横向，或不需要我参与", s:0},
+        {t:"参与一些，能给劳务费", s:3},
+        {t:"大量时间耗在横向上，严重挤占科研时间", s:8},
+        {t:"我是导师开公司的廉价劳动力，完全没时间写论文", s:10}
+    ]},
+    { d: 'labor', t: '接待应酬', q: "导师有客人来访或饭局，需要你作陪吗？", o: [
+        {t:"不需要", s:0},
+        {t:"偶尔参加学术宴请，增长见识", s:1},
+        {t:"经常去，主要是为了挡酒/倒茶", s:6},
+        {t:"必须去，且要表现得像个服务员/公关", s:9}
+    ]},
+
+    // --- 维度：财务剥削 (Finance) ---
+    { d: 'finance', t: '补助发放', q: "每个月到手的助研费（补助）情况？（除学校低保外）", o: [
+        {t:"高于平均水平，甚至有年终奖", s:0},
+        {t:"平均水平，够吃食堂", s:2},
+        {t:"非常少，甚至没有", s:6},
+        {t:"完全没有，甚至还要自己倒贴实验费", s:9}
+    ]},
+    { d: 'finance', t: '薪资回流', q: "是否存在“发了补助又要收回去”的情况？", o: [
+        {t:"从未听说", s:0},
+        {t:"偶尔扣除作为班费", s:2},
+        {t:"经常通过现金/转账形式返还给导师", s:10}, // 严重违规
+        {t:"不仅回流，还要帮导师洗钱", s:10}
+    ]},
+    { d: 'finance', t: '垫付费用', q: "你需要先自己垫钱买试剂/出差，然后再报销吗？", o: [
+        {t:"不需要，有公務卡或预付", s:0},
+        {t:"偶尔垫付小额", s:2},
+        {t:"经常垫付，且报销周期很长（数月）", s:6},
+        {t:"长期垫付万元以上，导师还经常赖账/忘记签字", s:10}
+    ]},
+    { d: 'finance', t: '奖励机制', q: "如果你发了文章或中了项目，有奖励吗？", o: [
+        {t:"有明确的现金奖励制度", s:0},
+        {t:"口头表扬，请吃顿饭", s:3},
+        {t:"没有任何表示，认为是理所应当", s:6},
+        {t:"不仅没奖励，版面费还要我自己出", s:10}
+    ]},
+    { d: 'finance', t: '隐形扣款', q: "导师是否会以各种名义扣钱（迟到、实验失败、卫生不合格）？", o: [
+        {t:"从不扣钱", s:0},
+        {t:"有象征性罚款充公", s:2},
+        {t:"经常扣，作为管理手段", s:7},
+        {t:"扣得比发的多，甚至让我欠费", s:10}
+    ]},
+
+    // --- 维度：精神PUA (Mental) ---
+    { d: 'mental', t: '打击式教育', q: "当你实验失败或遇到困难时，导师的反应？", o: [
+        {t:"一起分析原因，鼓励尝试", s:0},
+        {t:"虽然不高兴，但主要就事论事", s:3},
+        {t:"人身攻击：“你怎么这么笨/废物？”", s:8},
+        {t:"上升到人格/家庭：“你爸妈怎么教你的？”", s:10}
+    ]},
+    { d: 'mental', t: '画饼充饥', q: "导师承诺的推荐工作/送出国/发顶刊，兑现过吗？", o: [
+        {t:"基本言出必行", s:0},
+        {t:"有的兑现了，有的忘了", s:3},
+        {t:"从未兑现，全是空头支票", s:7},
+        {t:"不仅不兑现，当你提要求时还反咬一口说你贪婪", s:10}
+    ]},
+    { d: 'mental', t: '比较打压', q: "导师是否经常拿你和别人比较？", o: [
+        {t:"就事论事，比较学术成果", s:2},
+        {t:"偶尔比较", s:4},
+        {t:"经常把“你看人家某某”挂在嘴边", s:7},
+        {t:"捧一踩一，故意制造组内矛盾，孤立你", s:10}
+    ]},
+    { d: 'mental', t: '情绪稳定', q: "导师的情绪管理能力如何？", o: [
+        {t:"情绪稳定，像个成年人", s:0},
+        {t:"偶尔有压力大的时候", s:3},
+        {t:"阴晴不定，去办公室前要先打听由于心情", s:7},
+        {t:"暴躁易怒，经常摔东西/拍桌子/咆哮", s:10}
+    ]},
+    { d: 'mental', t: '感恩教育', q: "导师是否强调“恩情”？", o: [
+        {t:"从不，这是契约关系", s:0},
+        {t:"偶尔感叹师生情谊", s:2},
+        {t:"经常说“没有我就没有你的今天”", s:7},
+        {t:"要求你像对待父母/君主一样绝对服从和感恩", s:10}
+    ]},
+    { d: 'mental', t: '隐私干涉', q: "导师是否干涉你的私生活（恋爱、发型、穿着）？", o: [
+        {t:"完全不管", s:0},
+        {t:"偶尔八卦一下", s:2},
+        {t:"经常指指点点，甚至评价对象的长相", s:7},
+        {t:"监视社交媒体，禁止谈恋爱，或者强迫分手", s:10}
+    ]},
+
+    // --- 维度：前途阻碍 (Career) ---
+    { d: 'career', t: '论文署名', q: "关于论文署名，你组的惯例是？", o: [
+        {t:"学生一作，导师通讯", s:0},
+        {t:"导师偶尔要一作，或者共同一作", s:3},
+        {t:"我写的文章，导师把一作给了亲信/小导师", s:8},
+        {t:"直接抢一作，且完全不让我挂名", s:10}
+    ]},
+    { d: 'career', t: '毕业标准', q: "关于何时能毕业？", o: [
+        {t:"达到学校要求即可，支持尽早毕业", s:0},
+        {t:"比学校要求稍高，为保证质量", s:2},
+        {t:"无视学校规定，必须达到他的高标准（如必须发顶刊）", s:7},
+        {t:"即便达标也不让走，强行延毕留下来干活", s:10}
+    ]},
+    { d: 'career', t: '学术指导', q: "导师对你科研的实质性指导有多少？", o: [
+        {t:"定期讨论，指引方向，修改论文", s:0},
+        {t:"大方向把关，细节靠自己", s:3},
+        {t:"瞎指挥，外行指导内行，经常让改方向", s:7},
+        {t:"完全不管，或者只给一个无法实现的Idea", s:9}
+    ]},
+    { d: 'career', t: '学术交流', q: "是否支持你参加学术会议或交流？", o: [
+        {t:"大力支持，报销路费", s:0},
+        {t:"支持，但经费有限", s:2},
+        {t:"不支持，觉得是浪费做实验的时间", s:7},
+        {t:"严厉禁止，怕你出去乱说/认识其他人", s:10}
+    ]}
+    // 已将博士找工作题目移出基础题库
+];
+
+// 身份特供题（扩容至各5题）
+const roleSpecific = {
+    master: [
+        { d: 'career', t: '实习许可', q: "【硕士特供】关于出去实习的态度？", o: [
+            {t:"主动推荐实习机会", s:0},
+            {t:"不反对，只要干完活就行", s:3},
+            {t:"各种阻挠，必须偷偷去", s:7},
+            {t:"绝对禁止，发现就威胁不让毕业", s:10}
+        ]},
+        { d: 'career', t: '秋招请假', q: "【硕士特供】招聘季（金三银四）频繁请假面试，导师会？", o: [
+            {t:"理解并支持，甚至调整组会时间", s:0},
+            {t:"不太高兴，但还是会批", s:3},
+            {t:"非常不满，认为你心不在科研，刻意刁难", s:7},
+            {t:"完全不批，甚至威胁“找不到工作关我屁事”", s:10}
+        ]},
+        { d: 'career', t: '就业方向', q: "【硕士特供】如果你决定考公/去私企（不做科研），导师会？", o: [
+            {t:"尊重个人选择", s:0},
+            {t:"劝你读博，但如果你坚持也无所谓", s:2},
+            {t:"冷嘲热讽，觉得你“没出息/浪费培养”", s:6},
+            {t:"因此彻底边缘化你，不再指导毕业论文", s:10}
+        ]},
+        { d: 'career', t: '毕业签字', q: "【硕士特供】毕业前夕（签三方/离校单）需要导师签字时？", o: [
+            {t:"随到随签，非常配合", s:0},
+            {t:"拖拖拉拉，找不到人", s:3},
+            {t:"以此为要挟，让你必须做完某个额外工作才签", s:8},
+            {t:"恶意拒签，试图让你违约或延毕", s:10}
+        ]},
+        { d: 'career', t: '论文放水', q: "【硕士特供】导师对你硕士毕业论文的关心程度？", o: [
+            {t:"认真修改，确保达到毕业要求", s:0},
+            {t:"只看大框架，细节自己负责", s:3},
+            {t:"完全不看，盲审挂了才来骂你", s:7},
+            {t:"故意挑刺，说你写得垃圾，暗示要延毕", s:9}
+        ]}
+    ],
+    phd: [
+        { d: 'career', t: '延毕态度', q: "【博士特供】对于延毕的态度？", o: [
+            {t:"尽力让你按期毕业", s:0},
+            {t:"延毕主要看进度，属正常", s:2},
+            {t:"把延毕作为常态化管理手段", s:8},
+            {t:"恶意延毕，把你当熟练工无限期使用", s:10}
+        ]},
+        { d: 'career', t: '找教职支持', q: "【博士特供】找教职/博后时，导师的态度？", o: [
+            {t:"动用人脉大力推荐", s:0},
+            {t:"写常规推荐信", s:3},
+            {t:"不帮忙，或者因为想留你而从中作梗", s:9},
+            {t:"写黑信，毁你前程", s:10}
+        ]},
+        { d: 'career', t: '压稿行为', q: "【博士特供】论文早已写好，但导师为了冲顶刊或攒大招？", o: [
+            {t:"尊重你的意见，尽快投稿", s:0},
+            {t:"建议冲一下高分，但也允许改投", s:3},
+            {t:"强行压着不让发，一压就是一两年", s:8},
+            {t:"压到最后被别人抢发了，或者数据过期作废", s:10}
+        ]},
+        { d: 'labor', t: '隐形劳务', q: "【博士特供】你是否经常帮导师代写基金本子或审稿（Peer Review）？", o: [
+            {t:"偶尔帮忙查文献，也是锻炼", s:2},
+            {t:"经常参与，但导师会指导并给劳务费", s:4},
+            {t:"全是我的活，写完导师直接署名，没我份", s:8},
+            {t:"我是他的全职代笔/学术影子，但他对外宣称是自己写的", s:10}
+        ]},
+        { d: 'mental', t: '婚育态度', q: "【博士特供】如果你计划在读博期间结婚/生子？", o: [
+            {t:"祝福并给予产假/婚假", s:0},
+            {t:"不干涉，只要工作进度不落下", s:3},
+            {t:"阴阳怪气，觉得你“心思不在科研上”", s:7},
+            {t:"极力劝退/威胁，甚至以此为由逼退学", s:10}
+        ]}
+    ]
+};
+
+// 评级文案
+const levels = [
+    { max: 20, l: "Lv.1 赛博活佛", c: "#2ecc71", d: "上辈子拯救了银河系吧？这种神仙导师建议供起来。", advice: "好好珍惜，努力出成果报答知遇之恩。" },
+    { max: 35, l: "Lv.2 学术合伙人", c: "#27ae60", d: "正常的师生关系：平等、尊重、互利共赢。", advice: "保持沟通，你们是最佳拍档。" },
+    { max: 50, l: "Lv.3 规范雇主", c: "#f1c40f", d: "虽有压力，但按规矩办事，给钱给名分，不亏。", advice: "按部就班，完成任务，拿学位走人。" },
+    { max: 60, l: "Lv.4 严厉教头", c: "#f39c12", d: "Push是常态，但他也是为了你好（大概率）。", advice: "调整心态，抗住压力就能学到真本事。" },
+    { max: 70, l: "Lv.5 焦虑传播者", c: "#e67e22", d: "导师自己很焦虑，并将这种焦虑无损传输给了你。", advice: "学会左耳进右耳出，不要内耗。" },
+    { max: 80, l: "Lv.6 甩手掌柜", c: "#d35400", d: "瞎指挥或找不到人，全靠你自己。", advice: "不要指望他，赶紧抱大腿或自学成才。" },
+    { max: 90, l: "Lv.7 极致压榨机", c: "#c0392b", d: "996、杂活、克扣补助。你只是他的廉价劳动力。", advice: "学会摸鱼，保留证据，不要太老实。" },
+    { max: 100, l: "Lv.8 PUA大师", c: "#c0392b", d: "精神控制，让你觉得自己一无是处，离不开他。", advice: "警惕！找心理咨询，重建自信，你是正常的！" },
+    { max: 110, l: "Lv.9 奴隶主", c: "#8e44ad", d: "人格侮辱+人身依附。这里不是学校，是黑砖窑。", advice: "考虑换导师、休学或退学。保命要紧。" },
+    { max: 999, l: "Lv.10 学术摄魂怪", c: "#2c3e50", d: "逃！快逃！不仅要你的钱和力，还要吞噬你的灵魂。", advice: "收集证据，必要时法律维权。没有任何学位值得你搭上性命。" }
+];
+
+// 全局变量
+let currQList = [];
+let currIdx = 0;
+let userRole = '';
+let userTitle = '';
+let scores = { time:0, mental:0, labor:0, finance:0, career:0 };
+
+/* ----------------------------------------------------------------
+   逻辑控制
+---------------------------------------------------------------- */
+
+function goToDemo() {
+    document.getElementById('page-intro').style.display = 'none';
+    document.getElementById('page-demographics').style.display = 'block';
+}
+
+function initTest() {
+    userRole = document.getElementById('input-status').value;
+    userTitle = document.getElementById('input-title').value;
+    
+    // 组装题目：基础29题 + 5道特供题
+    currQList = [...questions, ...roleSpecific[userRole]];
+    currIdx = 0;
+    scores = { time:0, mental:0, labor:0, finance:0, career:0 };
+    
+    document.getElementById('page-demographics').style.display = 'none';
+    document.getElementById('page-test').style.display = 'flex';
+    renderQuestion();
+}
+
+function renderQuestion() {
+    const q = currQList[currIdx];
+    
+    // 进度条与标签
+    document.getElementById('progress-text').innerText = `${currIdx + 1} / ${currQList.length}`;
+    document.getElementById('progress-fill').style.width = `${((currIdx)/currQList.length)*100}%`;
+    document.getElementById('dim-tag').innerText = `维度：${getDimName(q.d)}`;
+    document.getElementById('q-category').innerText = q.t; // 题目标签
+    
+    // 动画重置
+    const wrapper = document.getElementById('question-wrapper');
+    wrapper.classList.remove('slide-up');
+    void wrapper.offsetWidth;
+    wrapper.classList.add('slide-up');
+    
+    document.getElementById('question-text').innerText = q.q;
+    const box = document.getElementById('options-box');
+    box.innerHTML = '';
+    
+    q.o.forEach(opt => {
+        const btn = document.createElement('div');
+        btn.className = 'option-btn';
+        btn.innerText = opt.t;
+        btn.onclick = () => {
+            Array.from(box.children).forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            setTimeout(() => handleAnswer(q.d, opt.s), 200);
+        };
+        box.appendChild(btn);
+    });
+
+    document.getElementById('prev-btn').style.display = currIdx > 0 ? 'block' : 'none';
+}
+
+function handleAnswer(dim, val) {
+    // 计分权重修正
+    let weight = 1.0;
+    if (userRole === 'phd') {
+        // 博士对杂活的容忍度低（因为时间宝贵），对前途更敏感
+        if (dim === 'labor') weight = 1.2;
+        if (dim === 'career') weight = 1.2;
+        // 博士对PUA的耐受高，略微降权（因为常态化）
+        if (dim === 'mental') weight = 0.9;
+    } else {
+        // 硕士对实习（career）和杂活（labor）敏感
+        if (dim === 'career') weight = 1.1;
+    }
+
+    scores[dim] += val * weight;
+
+    if (currIdx < currQList.length - 1) {
+        currIdx++;
+        renderQuestion();
+    } else {
+        finishTest();
+    }
+}
+
+function prevQuestion() {
+    if (currIdx > 0) {
+        // 简单回退，不做复杂的分数回滚（演示版）
+        // 实际开发应使用栈记录历史分数
+        currIdx--;
+        renderQuestion();
+    }
+}
+
+function finishTest() {
+    document.getElementById('page-test').style.display = 'none';
+    document.getElementById('page-loading').style.display = 'flex';
+    document.getElementById('page-loading').classList.remove('hidden');
+    
+    setTimeout(() => {
+        document.getElementById('page-loading').style.display = 'none';
+        document.getElementById('page-result').style.display = 'block';
+        calculateResult();
+    }, 2500);
+}
+
+function resetTest() {
+    // 重置逻辑：回到封面或档案页
+    document.getElementById('page-result').style.display = 'none';
+    document.getElementById('page-intro').style.display = 'flex';
+    // 清空数据
+    currIdx = 0;
+    scores = { time:0, mental:0, labor:0, finance:0, career:0 };
+}
+
+function calculateResult() {
+    // 归一化计算：34题，每题满分10，总分约340
+    // 目标映射到 0-120
+    let totalRaw = Object.values(scores).reduce((a,b)=>a+b, 0);
+    // 归一化系数调整：340 / 2.8 ≈ 121
+    let finalScore = Math.round(totalRaw / 2.8); 
+    if(finalScore > 120) finalScore = 120; // 封顶
+
+    // 找等级
+    let lvl = levels.find(l => finalScore <= l.max) || levels[levels.length-1];
+
+    // 渲染
+    const numEl = document.getElementById('res-score');
+    animateValue(numEl, 0, finalScore, 1500);
+    
+    const badge = document.getElementById('res-level');
+    badge.innerText = lvl.l;
+    badge.style.background = lvl.c;
+    
+    document.getElementById('res-desc').innerText = lvl.d;
+
+    // 维度条
+    renderBars(scores);
+    
+    // 雷达图
+    drawRadar(scores);
+}
+
+function renderBars(s) {
+    const box = document.getElementById('bars-container');
+    const dims = [
+        {k:'time', n:'工时'}, {k:'mental', n:'精神'}, 
+        {k:'labor', n:'杂活'}, {k:'finance', n:'财务'}, {k:'career', n:'前途'}
+    ];
+    let html = '';
+    
+    // 找出最大维度，用于报告高亮
+    let maxK = 'time';
+    for(let k in s) if(s[k]>s[maxK]) maxK = k;
+
+    dims.forEach(d => {
+        // 单维大概 6-7题，满分60-70，归一化到100%
+        let pct = Math.min((s[d.k] / 65) * 100, 100);
+        let color = pct > 60 ? '#c0392b' : (pct > 30 ? '#f39c12' : '#27ae60');
+        let txt = pct > 70 ? '高危' : (pct > 40 ? '中等' : '安全');
+        
+        html += `
+        <div class="dim-row">
+            <div class="dim-info">
+                <span class="dim-name">${d.n}</span>
+                <span class="dim-sub">${getDimName(d.k)}</span>
+            </div>
+            <div class="dim-bar-bg"><div class="dim-bar-fill" style="width:${pct}%; background:${color};"></div></div>
+            <div class="dim-val" style="color:${color}">${txt}</div>
+        </div>`;
+    });
+    box.innerHTML = html;
+}
+
+function getDimName(k) {
+    const map = {time:'Time', mental:'PUA', labor:'Labor', finance:'Money', career:'Future'};
+    return map[k];
+}
+
+/* ----------------------------------------------------------------
+   万字报告生成系统
+---------------------------------------------------------------- */
+function showReport() {
+    const total = parseInt(document.getElementById('res-score').innerText);
+    // 细化等级判定逻辑，增加更丰富的评价
+    const lvl = levels.find(l => total <= l.max) || levels[levels.length-1];
+    
+    // 找出得分最高（最惨）的维度
+    let maxDimKey = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    let maxDimVal = scores[maxDimKey];
+
+    // 根据总分生成更具冲击力的环境定性
+    let envStatus = '';
+    let envClass = '';
+    if (total > 80) {
+        envStatus = '☢️ 极度高危：切尔诺贝利级学术废土 (Toxic Wasteland)';
+        envClass = 'color:#c0392b; font-weight:900;';
+    } else if (total > 60) {
+        envStatus = '⚠️ 严重警告：剥削型劳动密集工厂 (Sweatshop)';
+        envClass = 'color:#e67e22; font-weight:800;';
+    } else if (total > 40) {
+        envStatus = '⚖️ 风险可控：传统的封建学徒制工坊 (Apprenticeship)';
+        envClass = 'color:#f39c12; font-weight:700;';
+    } else {
+        envStatus = '🌿 良性共生：现代契约制学术共同体 (Academic Community)';
+        envClass = 'color:#27ae60; font-weight:700;';
+    }
+
+    let html = `
+    <div class="report-section">
+        <div class="r-h1">一、学术生存环境病理诊断书</div>
+        <p class="r-p" style="background:#f8f9fa; padding:12px; border-radius:8px; font-size:14px; border:1px solid #eee;">
+            <strong>📁 样本档案：</strong>${userRole==='phd'?'博士研究生 (学术苦力高阶形态)':'硕士研究生 (就业后备军)'} <br>
+            <strong>👨‍🏫 导师画像：</strong>${getTitleName(userTitle)}
+        </p>
+        
+        <div class="r-box" style="border-left:5px solid ${lvl.c}; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+            <div style="font-size:22px; font-weight:900; color:${lvl.c}; margin-bottom:8px;">${lvl.l}</div>
+            <div style="display:flex; align-items:baseline; margin-bottom:10px;">
+                <span style="font-size:14px; color:#999; margin-right:8px;">综合压榨指数</span>
+                <span style="font-size:36px; font-weight:900; color:#2c3e50; font-family:'DIN Alternate', sans-serif;">${total}</span>
+                <span style="font-size:14px; color:#999;">/ 120</span>
+            </div>
+            <p style="margin:0; font-size:15px; line-height:1.6; color:#555;"><strong>导师判词：</strong>${lvl.advice}</p>
+        </div>
+
+        <div style="margin-top:20px; padding:15px; background:#fff; border-radius:8px; border:1px solid #eee;">
+            <p style="margin:0 0 10px 0; font-size:14px; color:#999;">环境定性分析：</p>
+            <div style="${envClass} font-size:17px; margin-bottom:12px;">${envStatus}</div>
+            <p class="r-p" style="font-size:15px; margin:0;">
+                经过 34 项生存指标的深度扫描，系统检测到您的核心生存痛点位于 <span style="background:#c0392b; color:#fff; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:13px;">${getDimFullCN(maxDimKey)}</span> 维度。
+                ${total > 60 ? '这是一场不对等的权力博弈，您的身心健康正在遭遇系统性的磨损。' : '目前的压力尚处于学术训练的合理区间，但仍需警惕边界的模糊。'}
+            </p>
+        </div>
+    </div>
+
+    <div class="report-section">
+        <div class="r-h2">二、五维压榨机制深度解构</div>
+        <p style="font-size:12px; color:#999; margin-bottom:20px; font-style:italic;">*基于社会心理学与劳动权益视角的深度分析</p>
+        ${generateDimAnalysis('time', scores.time)}
+        ${generateDimAnalysis('labor', scores.labor)}
+        ${generateDimAnalysis('finance', scores.finance)}
+        ${generateDimAnalysis('mental', scores.mental)}
+        ${generateDimAnalysis('career', scores.career)}
+    </div>
+
+    <div class="report-section">
+        <div class="r-h2">三、博弈论视角的生存策略</div>
+        <div class="r-box" style="border-color:#bdc3c7;">
+            <div class="r-h3">🛡️ 防御篇：建立护城河</div>
+            <ul class="r-list">
+                <li><strong>证据链固化 (Evidence Hardening)：</strong> 不要依赖记忆。将所有不合理的杂活指派、辱骂录音、垫资转账记录，通过邮件或云盘进行异地备份。这是你应对“非升即走”压力传导时的最后核威慑。</li>
+                <li><strong>心理防火墙 (Psychological Firewall)：</strong> 导师的愤怒往往源于他自身的绩效焦虑。当遭遇人格贬低时，请在内心默念：“这是他的焦虑投射，与我的能力无关。” 将“学术指导”与“人格评价”进行强制物理隔离。</li>
+                <li><strong>财务物理隔离 (Financial Separation)：</strong> 坚决守住“不长期垫资”的底线。建立独立的科研报销台账，对于超过月补助 20% 的垫款要求，学会用“家里急用钱”等硬借口进行软抵抗。</li>
+            </ul>
+        </div>
+        
+        <div class="r-box" style="background:${userRole==='phd'?'#fff5f5':'#f0f9ff'}; border-color:${userRole==='phd'?'#fadbd8':'#bae6fd'};">
+            <div class="r-h3" style="color:${userRole==='phd'?'#c0392b':'#0288d1'};">
+                🚀 突围篇：${userRole==='phd'?'博士·绝地求生':'硕士·逃出生天'}
+            </div>
+            ${userRole==='phd' ? getPhdAdvice() : getMasterAdvice()}
+        </div>
+    </div>
+    
+    <div style="text-align:center; color:#ccc; font-size:12px; margin-top:50px; line-height:1.8;">
+        本报告由反压榨算法自动生成<br>
+        祝愿每一颗求知的心，都能在阳光下自由跳动
+    </div>
+    `;
+
+    document.getElementById('report-content').innerHTML = html;
+    document.getElementById('report-modal').style.display = 'block';
+}
+
+function getTitleName(t) {
+    // 更具讽刺和洞察力的头衔
+    const m = {
+        young: '焦虑驱动型·非升即走青椒 (The Tenure-Track Sprinter)', 
+        tenure: '资源垄断型·学术门阀大牛 (The Resource Monopoly)', 
+        admin: '权力寻租型·行政领导 (The Absentee Bureaucrat)', 
+        retirement: '神隐放养型·佛系长者 (The Hands-Off Sage)'
+    };
+    return m[t] || t;
+}
+
+function getDimFullCN(k) {
+    const m = {
+        time: '时间主权剥夺 (Time Theft)', 
+        mental: '人格重塑与PUA (Gaslighting)', 
+        labor: '去智力化劳役 (De-skilling)', 
+        finance: '经济掠夺 (Financial Exploitation)', 
+        career: '职业生涯阻断 (Career Sabotage)'
+    };
+    return m[k];
+}
+
+function generateDimAnalysis(key, val) {
+    // 满分约 65-70，根据分数分级
+    let riskLevel = val > 45 ? 'high' : (val > 25 ? 'med' : 'low');
+    
+    // 颜色配置
+    const config = {
+        high: { color: '#c0392b', bg: '#fdecea', tag: '☠️ 极度高危', titleColor: '#c0392b' },
+        med: { color: '#e67e22', bg: '#fef5e7', tag: '⚠️ 中度风险', titleColor: '#d35400' },
+        low: { color: '#27ae60', bg: '#e8f8f5', tag: '✅ 相对安全', titleColor: '#27ae60' }
+    };
+    
+    const c = config[riskLevel];
+    
+    // 深度文案库
+    const texts = {
+        time: {
+            high: "<strong>您的‘时间主权’已彻底沦陷。</strong> 这不仅仅是加班，而是一种全景敞视监狱（Panopticon）式的监控。24小时待命机制导致您的海马体长期浸泡在皮质醇中，造成不可逆的认知损伤。您被迫放弃了思考的权利，沦为导师意志的各种延伸义肢。",
+            med: "<strong>处于‘灰度加班’的模糊地带。</strong> 虽然没有明文规定的996，但隐形工时（随时回复消息、周末被迫自愿加班）正在蚕食您的生活边界。这种‘温水煮青蛙’模式最容易导致慢性职业倦怠（Burnout）。",
+            low: "<strong>享有珍贵的‘深度工作’权利。</strong> 导师尊重您的休息权，这意味着您有完整的整块时间进行深度思考，这是产出高质量创新成果的必要土壤。"
+        },
+        labor: {
+            high: "<strong>深陷‘去智力化’陷阱。</strong> 过高浓度的报销、跑腿、拿快递等低价值重复劳动，正在系统性地摧毁您的核心竞争力。这是一种‘学术保姆’机制，让您在忙碌中逐渐丧失独立科研的能力，形成对导师的人身依附。",
+            med: "<strong>科研与杂务的拉锯战。</strong> 您的精力被科研与琐事撕扯，效率磨损严重。需警惕‘能者多劳’的陷阱，尝试用‘拖字诀’或‘低质量交付’来应对非核心杂务，夺回注意力。",
+            low: "<strong>拥有纯净的科研特权。</strong> 导师为您屏蔽了行政琐事的干扰，这种‘无菌’的科研环境在当下学术圈是极为稀缺的资源，请务必利用这段黄金期产出硬核成果。"
+        },
+        finance: {
+            high: "<strong>遭遇‘掠夺式’经济霸凌。</strong> 克扣补助、垫付经费甚至薪资回流（Kickback），已触碰法律红线。导师将科研成本非法转嫁给最弱势的学生，这不仅是道德沦丧，更是一种基于权力的‘阶层剥削’。请保留好每一笔转账记录。",
+            med: "<strong>处于‘紧平衡’的生存状态。</strong> 偶尔的垫付或微薄的补助让您在温饱线上挣扎。这种底层的经济焦虑会潜意识地降低您的风险承受力，迫使您在选题上趋于保守，不敢挑战高风险高回报的课题。",
+            low: "<strong>享有‘体面生存’的底线保障。</strong> 充足的经费支持和合规的报销流程，体现了导师对知识劳动的基本尊重，让您可以无需为生计发愁，体面地追求真理。"
+        },
+        mental: {
+            high: "<strong>正在经历‘人格杀戮’（Gaslighting）。</strong> 导师通过否定人格、制造愧疚感、切断社交支持，试图瓦解您的现实检验能力。您感到的‘我很笨’‘我不配’是被植入的认知病毒。请立即寻求心理干预，重建自我认知。",
+            med: "<strong>存在情绪压力的‘传导阻滞’。</strong> 导师经常将其自身的绩效焦虑无过滤地倾倒在您身上。您需要建立强大的‘心理隔离带’，不要成为导师情绪失控的垃圾桶。",
+            low: "<strong>处于‘心理赋能’的正向场域。</strong> 平等的对话机制和稳定的情绪价值，为您提供了坚实的心理后盾。这种安全感是比发表论文更宝贵的人生财富。"
+        },
+        career: {
+            high: "<strong>面临‘焦土政策’式的封锁。</strong> 抢占一作、恶意延毕、阻断实习，导师为了榨干您的剩余价值，不惜通过毁坏您的职业前程来将其强制绑定在实验室。这是一场零和博弈，唯有止损才是出路。",
+            med: "<strong>处于‘放养式’的自生自灭区。</strong> 大方向靠自己悟，细节靠师兄带。虽无恶意阻拦，但也缺乏资源托举。您需要学会‘野蛮生长’，主动向外寻找学术资源和合作机会。",
+            low: "<strong>遇到了真正的‘职业摆渡人’。</strong> 导师不仅指导当下的科研，更在为您未来的职业生涯铺路。这种代际传承的责任感是学术界最闪光的部分，请终身铭记。"
+        }
+    };
+    
+    return `
+    <div style="margin-bottom:24px; padding:16px; background:${c.bg}; border-radius:8px; border-left:4px solid ${c.color};">
+        <div class="r-h3" style="color:${c.titleColor}; margin-top:0;">
+            ${getDimFullCN(key)} 
+            <span style="font-size:12px; opacity:0.8; margin-left:8px;">(得分: ${Math.round(val)})</span>
+            <span style="float:right; font-size:12px; background:${c.color}; color:#fff; padding:2px 8px; border-radius:10px;">${c.tag}</span>
+        </div>
+        <p class="r-p" style="margin-bottom:0; color:#444;">${texts[key][riskLevel]}</p>
+    </div>
+    `;
+}
+
+function getPhdAdvice() {
+    return `
+    <ul class="r-list">
+        <li><strong>博三熔断机制 (The Circuit Breaker)：</strong> 博三是‘生死线’。若此时无一作、无实质进展且导师不仅是画饼，请立刻启动‘熔断’程序。哪怕转硕、退学，也比在抑郁中沉没要好。<strong>沉没成本不是成本，你的命才是。</strong></li>
+        <li><strong>战术性躺平 (Tactical Detachment)：</strong> 如果无法改变环境，就改变策略。表面维持顺从，实则将核心精力转移到发小文章（满足毕业最低要求）、考证或寻找海外博后机会上。做导师的‘隐形人’，而非‘出头鸟’。</li>
+        <li><strong>构建‘影子导师’ (Shadow Mentoring)：</strong> 不要把所有鸡蛋放在导师这一个篮子里。私下联系其他导师、参加学术会议结识大牛、甚至寻找企业界的Mentor。建立独立于导师之外的评价坐标系。</li>
+    </ul>`;
+}
+
+function getMasterAdvice() {
+    return `
+    <ul class="r-list">
+        <li><strong>就业是唯一真理 (Employment First)：</strong> 记住，硕士学历只是敲门砖，实习经历才是硬通货。利用一切生病、事假的机会去大厂实习。对于毕业论文，目标只需设定为‘盲审及格’，而非‘优秀’。</li>
+        <li><strong>向上管理之忽悠学 (Management Upwards)：</strong> 定期汇报‘虚假繁荣’的进度，让导师觉得你很忙但很听话，从而减少对你的微操。对于无意义杂活，学会‘低质量交付’（做到60分），让他下次不再找你。</li>
+        <li><strong>断舍离 (Clean Break)：</strong> 拿到双证的那一刻，迅速拉黑，切断一切联系，逃离学术黑洞。不要试图感化导师，不要回头，外面的世界很宽广。</li>
+    </ul>`;
+}
+
+function closeReport() {
+    document.getElementById('report-modal').style.display = 'none';
+}
+
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start);
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+/* ----------------------------------------------------------------
+   图表绘制
+---------------------------------------------------------------- */
+function drawRadar(s) {
+    const c = document.getElementById('radarChart');
+    const ctx = c.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    c.style.width = '240px'; c.style.height = '240px';
+    c.width = 240 * dpr; c.height = 240 * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const cx=120, cy=120, r=90;
+    const keys = ['time','mental','labor','finance','career'];
+    const labels = ['工时','精神','杂活','财务','前途'];
+    
+    // 背景网格
+    ctx.strokeStyle = '#dfe6e9';
+    ctx.lineWidth = 1;
+    for(let i=1; i<=4; i++) {
+        ctx.beginPath();
+        for(let j=0; j<5; j++) {
+            let a = (Math.PI*2/5)*j - Math.PI/2;
+            let rad = (r/4)*i;
+            ctx.lineTo(cx + Math.cos(a)*rad, cy + Math.sin(a)*rad);
+        }
+        ctx.closePath(); ctx.stroke();
+    }
+    
+    // 数据层
+    ctx.beginPath();
+    keys.forEach((k, i) => {
+        // 满分约 65
+        let val = s[k]; 
+        let ratio = Math.min(val / 65, 1.1); 
+        let a = (Math.PI*2/5)*i - Math.PI/2;
+        ctx.lineTo(cx + Math.cos(a)*r*ratio, cy + Math.sin(a)*r*ratio);
+    });
+    ctx.closePath();
+    
+    // 渐变填充
+    let grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    grd.addColorStop(0, "rgba(192, 57, 43, 0.1)");
+    grd.addColorStop(1, "rgba(192, 57, 43, 0.6)");
+    ctx.fillStyle = grd;
+    ctx.fill();
+    
+    ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
+    
+    // 文字
+    ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+    labels.forEach((l, i) => {
+        let a = (Math.PI*2/5)*i - Math.PI/2;
+        ctx.fillText(l, cx + Math.cos(a)*(r+20), cy + Math.sin(a)*(r+20) + 4);
+    });
+}
+</script>
+
+<!-- 
+  =======================================================
+  🔒 网页防伪提示锁 (米大师定制版)
+  使用说明：
+  1. 修改 MAX_USES 为限制的次数（默认6次）。
+  2. 将代码粘贴到网页文件的 </body> 标签之前。
+  =======================================================
+-->
+
+<style>
+    /* 锁屏界面样式 */
+    #gate-modal {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: #ffffff;
+        z-index: 2147483647;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        transition: opacity 0.5s;
+    }
+    
+    .gate-card {
+        background: #fff; width: 100%; max-width: 340px; padding: 40px 30px;
+        border-radius: 24px; 
+        box-shadow: 0 15px 50px rgba(0,0,0,0.08); text-align: center;
+        border: 1px solid #fff5f7; 
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* 视图切换容器 */
+    .view-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.4s ease;
+    }
+    .view-container.active {
+        display: flex;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* 头像样式 */
+    .avatar-wrapper {
+        width: 80px; height: 80px;
+        background: #ffe6eb; 
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 12px;
+        font-size: 42px;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 15px rgba(255, 36, 66, 0.15);
+    }
+
+    .brand-tag {
+        display: inline-block;
+        background: #f8f8f8;
+        color: #999;
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+    
+    .gate-title { font-size: 20px; font-weight: 800; color: #333; margin-bottom: 12px; line-height: 1.4; }
+    
+    .gate-desc { 
+        font-size: 14px; color: #666; margin-bottom: 25px; 
+        line-height: 1.6; 
+    }
+
+    /* 按钮样式 */
+    .action-btn {
+        width: 100%; padding: 15px; border-radius: 50px; 
+        font-size: 15px; font-weight: bold; cursor: pointer; 
+        transition: all 0.2s; margin-bottom: 12px;
+        border: none; outline: none;
+    }
+    .action-btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #ff2442, #ff5e75);
+        color: white; 
+        box-shadow: 0 4px 15px rgba(255, 36, 66, 0.3);
+    }
+    .btn-secondary {
+        background: #f5f5f5;
+        color: #666;
+    }
+    .btn-secondary:hover { background: #eeeeee; }
+
+    .gate-err { 
+        color: #ff2442; font-size: 13px; margin-top: 5px; height: 18px; 
+        opacity: 0; transition: opacity 0.3s; font-weight: 600; 
+    }
+    
+    .loading-layer {
+        position: absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.98);
+        display: none; flex-direction: column;
+        align-items: center; justify-content: center; z-index: 10;
+    }
+    .spinner {
+        width: 32px; height: 32px; border: 3px solid #ffe6eb;
+        border-top: 3px solid #ff2442; border-radius: 50%;
+        animation: spin 1s linear infinite; margin-bottom: 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+</style>
+
+<div id="gate-modal">
+    <div class="gate-card" id="main-card">
+        
+        <!-- ================= 视图1：防伪提问 ================= -->
+        <div class="view-container active" id="view-question">
+            <div class="avatar-wrapper" style="background: #f0f7ff; box-shadow: 0 4px 15px rgba(36, 131, 255, 0.15);">🐱</div>
+            <div class="gate-title">温馨提示</div>
+            <div class="gate-desc" style="color: #333; font-weight: 500;">
+                为了保障您的体验<br>请问您购买本测试的店铺是<br><span style="color:#ff2442; font-weight:bold; font-size:16px;">“心理米大师的店”</span> 吗？
+            </div>
+            
+            <button class="action-btn btn-primary" onclick="switchView('view-cover')">
+                对，确认无误，就是<span style="font-size: 18px; font-weight: 900; color: #ffe895; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">心理米大师</span>
+            </button>
+            <button class="action-btn btn-secondary" onclick="switchView('view-warning')">
+                好像不是，可能是别的店铺
+            </button>
+        </div>
+
+        <!-- ================= 视图2：正版欢迎页 (去掉了密码框) ================= -->
+        <div class="view-container" id="view-cover">
+            <div class="avatar-wrapper">😻</div>
+            <div class="gate-title">米大师的私密测试空间</div>
+            <div class="brand-tag">@心理米大师 · 专注高质量心理测试</div>
+            
+            <div class="gate-desc">
+                Hi 宝子 👋<br>
+                <strong style="color:#ff2442;">请认准心理米大师</strong><br>
+                小店所有测试都是本人亲自制作<br>
+                欢迎宝子们进店选购 ✨
+            </div>
+            
+            <button class="action-btn btn-primary" onclick="unlockPage()">✨ 开启专属测试 ✨</button>
+            <div class="gate-err" id="gate-msg"></div>
+            
+            <!-- 剩余次数提示 -->
+            <div style="margin-top:10px; font-size:11px; color:#bbb;" id="limit-hint"></div>
+        </div>
+
+        <!-- ================= 视图3：盗版提示页 ================= -->
+        <div class="view-container" id="view-warning">
+            <div class="avatar-wrapper" style="background: #fff0f0;">😿</div>
+            <div class="gate-title">好像遇到盗版了...</div>
+            
+            <div class="gate-desc" style="text-align: left;">
+                麻烦宝子仔细确认一下，如果店铺名称确实不叫<strong style="color:#ff2442;">心理米大师</strong>，麻烦您帮我举报一下哦！<br><br>
+                如果可以私信告诉我，那就更好啦，非常感谢你的支持和正义感 ❤️
+            </div>
+            
+            <button class="action-btn btn-secondary" onclick="switchView('view-question')">返回重新选择</button>
+        </div>
+
+        <!-- 动画层 -->
+        <div class="loading-layer" id="load-layer">
+            <div class="spinner"></div>
+            <div style="font-size:13px; color:#333; font-weight:bold;" id="load-text">正在加载...</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ================= 配置区域 =================
+    const MAX_USES = 6;                // 同一台设备限制的次数
+    // ==========================================
+
+    const pageId = window.location.pathname; // 区分不同页面的缓存
+    const usageKey = 'usage_count_' + pageId; // 本地存储Key
+
+    // 1. 检查Session（本次会话是否已解锁）
+    if (sessionStorage.getItem('unlocked_' + pageId)) {
+        document.getElementById('gate-modal').style.display = 'none';
+    }
+
+    // 2. 初始化显示剩余次数
+    function updateLimitUI() {
+        let currentUsage = parseInt(localStorage.getItem(usageKey) || '0');
+        let remaining = Math.max(0, MAX_USES - currentUsage);
+        document.getElementById('limit-hint').innerText = `本设备剩余可用次数：${remaining}次`;
+    }
+    updateLimitUI();
+
+    // 3. 切换视图功能
+    function switchView(viewId) {
+        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+
+    // 4. 解锁页面功能
+    function unlockPage() {
+        const msg = document.getElementById('gate-msg');
+        let usedCount = parseInt(localStorage.getItem(usageKey) || '0');
+        
+        // 检查次数
+        if (usedCount >= MAX_USES) {
+            msg.innerText = `宝子，本设备的测试次数已用完啦 (${MAX_USES}/${MAX_USES})`;
+            msg.style.opacity = 1;
+            shakeCard();
+            return;
+        }
+
+        // --- 验证通过 ---
+        msg.style.opacity = 0;
+        
+        // 1. 扣除次数
+        localStorage.setItem(usageKey, usedCount + 1);
+        
+        // 2. 播放动画
+        document.getElementById('load-layer').style.display = 'flex';
+        const txt = document.getElementById('load-text');
+        
+        setTimeout(() => { txt.innerText = "正在加载专属报告..."; }, 800);
+        setTimeout(() => { 
+            let left = MAX_USES - (usedCount + 1);
+            txt.innerText = `加载成功！(剩余${left}次)`; 
+            txt.style.color = "#ff2442"; 
+        }, 1500);
+        
+        // 3. 解锁页面
+        setTimeout(() => {
+            sessionStorage.setItem('unlocked_' + pageId, 'true');
+            document.getElementById('gate-modal').style.opacity = 0;
+            setTimeout(() => { 
+                document.getElementById('gate-modal').style.display = 'none'; 
+            }, 500);
+        }, 2500);
+    }
+
+    // 震动动画
+    function shakeCard() {
+        const card = document.getElementById('main-card');
+        card.style.animation = 'shake 0.3s';
+        setTimeout(() => { card.style.animation = ''; }, 300);
+    }
+</script>
+</body>
+</html>
